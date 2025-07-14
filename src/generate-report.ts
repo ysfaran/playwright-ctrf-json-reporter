@@ -16,6 +16,7 @@ import {
   type CtrfTest,
   type CtrfEnvironment,
   type CtrfAttachment,
+  type CtrfTestAttempt,
 } from '../types/ctrf'
 
 interface ReporterConfigOptions {
@@ -221,6 +222,22 @@ class GenerateCtrfReport implements Reporter {
       )
       if (this.reporterConfigOptions.annotations !== undefined) {
         test.extra = { annotations: testCase.annotations }
+      }
+
+      if (testCase.results.length > 1) {
+        const previousResults = testCase.results.slice(0, -1)
+        test.previousAttempts = []
+
+        for (const previousResult of previousResults) {
+          const previousAttempt: CtrfTestAttempt = {
+            status: this.mapPlaywrightStatusToCtrf(previousResult.status),
+            duration: previousResult.duration,
+            message: this.extractFailureDetails(previousResult).message,
+            trace: this.extractFailureDetails(previousResult).trace,
+            snippet: this.extractFailureDetails(previousResult).snippet,
+          }
+          test.previousAttempts.push(previousAttempt)
+        }
       }
     }
 

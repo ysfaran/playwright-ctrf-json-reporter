@@ -47,7 +47,16 @@ export interface CtrfTest {
   screenshot?: string
   parameters?: Record<string, any>
   steps?: Step[]
+  previousAttempts?: CtrfTestAttempt[]
   extra?: Record<string, any>
+}
+
+export interface CtrfTestAttempt {
+  status: CtrfTestState
+  duration: number
+  message?: string
+  trace?: string
+  snippet?: string
 }
 
 export interface CtrfEnvironment {
